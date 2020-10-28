@@ -14,7 +14,7 @@ class BookController extends Controller
     public function index()
     {
         $books = Book::all();
-        return view('index', compact('books'));
+        return view('books.index', compact('books'));
     }
 
     /**
@@ -49,19 +49,20 @@ class BookController extends Controller
             'image' => "required",
         ]);
         
-        $book = new Book;
-        $book->title = $data['title'];
-        $book->author = $data['author'];
-        $book->pages = $data['pages'];
-        $book->edition = $data['edition'];
-        $book->year = $data['year'];
-        $book->isbn = $data['isbn'];
-        $book->genre = $data['genre'];
-        $book->image = $data['image'];
+        $book = new Book([
+            $book->title = $data['title'],
+            $book->author = $data['author'],
+            $book->pages = $data['pages'],
+            $book->edition = $data['edition'],
+            $book->year = $data['year'],
+            $book->isbn = $data['isbn'],
+            $book->genre = $data['genre'],
+            $book->image = $data['image'],
+        ]);
 
         $book->save();
 
-        return redirect()->route('books.show', $book);
+        return redirect('/books');
 
     }
 
