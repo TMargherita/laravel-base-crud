@@ -36,18 +36,30 @@ class BookController extends Controller
     public function store(Request $request)
     {
 
-        $storeBook = $request->validate([
+        $data = $request->all();
+        
+        $request->validate([
             'title' => "required|max:30",
             'author' => "required|max:50",
-            'image' => "required",
-            'genre' => "required|max:30",
-            'pages' => "required|smallInteger",
+            'pages' => "required|integer",
             'edition' => "required|max:50",
             'year' => "required|date",
             'isbn' => "required|unique:books|max:13",
+            'genre' => "required|max:30",
+            'image' => "required",
         ]);
+        
+        $book = new Book;
+        $book->title = $data['title'];
+        $book->author = $data['author'];
+        $book->pages = $data['pages'];
+        $book->edition = $data['edition'];
+        $book->year = $data['year'];
+        $book->isbn = $data['isbn'];
+        $book->genre = $data['genre'];
+        $book->image = $data['image'];
 
-        $book = Book::create($storeBook);
+        $book->save();
 
         return redirect()->route('books.show', $book);
 
@@ -63,7 +75,7 @@ class BookController extends Controller
     {
         $book = Book::find($id); // SELECT * FROM books WHERE id = $id;
         
-        return view("show", compact('books'));
+        return view("show",  ["book" => $book]);
     }
 
     /**
@@ -75,7 +87,7 @@ class BookController extends Controller
     public function edit($id)
     {
         $book = Book::findOrFail($id);
-        return view('edit', compact('books'));
+        return view('edit',  ["book" => $book]);
     }
 
     /**
@@ -87,19 +99,37 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $updateData= $request ->validate([
+        $data = $request->all();
+
+        $request->validate([
             'title' => "required|max:30",
             'author' => "required|max:50",
-            'image' => "required",
-            'genre' => "required|max:30",
-            'pages' => "required|smallInteger",
+            'pages' => "required|integer",
             'edition' => "required|max:50",
             'year' => "required|date",
-            'isbn' => "required|unique:books|max:13",
+            'isbn' => [ 
+                "required",
+                "max:13",
+                Rule::unique('books')->ignore($id)
+            ],
+            'genre' => "required|max:30",
+            'image' => "required",
         ]);
+        
+        $book = Book::find($id);
 
-        Book::whereId($id)->update($updateData);
-        return redirect()->route('books.show', $book);
+        $book->title = $data['title'];
+        $book->author = $data['author'];
+        $book->pages = $data['pages'];
+        $book->edition = $data['edition'];
+        $book->year = $data['year'];
+        $book->isbn = $data['isbn'];
+        $book->genre = $data['genre'];
+        $book->image = $data['image'];
+
+        $book->update();
+
+        return redirect()->route("books.show", $book);
     }
 
     /**
