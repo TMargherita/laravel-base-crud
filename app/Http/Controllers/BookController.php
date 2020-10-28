@@ -13,7 +13,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        //
+        $books = Book::all();
+        return view('index', compact('books'));
     }
 
     /**
@@ -23,7 +24,7 @@ class BookController extends Controller
      */
     public function create()
     {
-        //
+        return view ('create');
     }
 
     /**
@@ -34,7 +35,22 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $storeBook = $request->validate([
+            'title' => "required|max:30",
+            'author' => "required|max:50",
+            'image' => "required",
+            'genre' => "required|max:30",
+            'pages' => "required|smallInteger",
+            'edition' => "required|max:50",
+            'year' => "required|date",
+            'isbn' => "required|unique:books|max:13",
+        ]);
+
+        $book = Book::create($storeBook);
+
+        return redirect()->route('books.show', $book);
+
     }
 
     /**
@@ -45,7 +61,9 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        //
+        $book = Book::find($id); // SELECT * FROM books WHERE id = $id;
+        
+        return view("show", compact('books'));
     }
 
     /**
@@ -56,7 +74,8 @@ class BookController extends Controller
      */
     public function edit($id)
     {
-        //
+        $book = Book::findOrFail($id);
+        return view('edit', compact('books'));
     }
 
     /**
@@ -68,7 +87,19 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $updateData= $request ->validate([
+            'title' => "required|max:30",
+            'author' => "required|max:50",
+            'image' => "required",
+            'genre' => "required|max:30",
+            'pages' => "required|smallInteger",
+            'edition' => "required|max:50",
+            'year' => "required|date",
+            'isbn' => "required|unique:books|max:13",
+        ]);
+
+        Book::whereId($id)->update($updateData);
+        return redirect()->route('books.show', $book);
     }
 
     /**
@@ -79,6 +110,10 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $book = Book::find($id);
+
+        $book->delete();
+
+        return redirect()->route("books.index");
     }
 }
