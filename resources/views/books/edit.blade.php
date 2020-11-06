@@ -26,7 +26,7 @@
     </div>
 
     <div>
-      <label for="image">Immagine URL</label>
+      <label for="image">Immagine</label>
       <input type="text" name="image" placeholder="Immagine URL" id="image" value="{{ $book->image }}">
     </div>
 

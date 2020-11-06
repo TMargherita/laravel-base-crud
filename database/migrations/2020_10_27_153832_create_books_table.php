@@ -21,7 +21,7 @@ class CreateBooksTable extends Migration
             $table->string('genre', 30);
             $table->string('edition', 50);
             $table->smallInteger('pages');	            
-            $table->string('image');	            
+            $table->string("image")->default("https://via.placeholder.com/200x300");	            
             $table->date('year');	            
             $table->timestamps();
         });
